@@ -4,11 +4,17 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const app = express();
 
+// Body parser for form data
 app.use(bodyParser.urlencoded({ extended: true }));
+
+// Serve static files from the "client" directory
 app.use(express.static(path.join(__dirname, '../client')));
 
-// Connect to MongoDB (replace with your MongoDB URI)
-mongoose.connect('mongodb+srv://gnani:gnani@cluster0.jimeq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', { useNewUrlParser: true, useUnifiedTopology: true });
+// Connect to MongoDB
+mongoose.connect('mongodb+srv://gnani:gnani@cluster0.jimeq.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0', { 
+    useNewUrlParser: true, 
+    useUnifiedTopology: true 
+});
 
 // Define Patient Schema and Model
 const patientSchema = new mongoose.Schema({
@@ -39,7 +45,12 @@ app.post('/submitPatientData', async (req, res) => {
     }
 });
 
-// Start the server
+// Serve index.html for the root URL
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client', 'index.html'));
+});
+
+// Use the environment variable PORT or default to 3000
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
